@@ -1,0 +1,79 @@
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deployment at a time; a newer push replaces a queued one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+env:
+  # Every installed copy of Séance checks this file for updates (served at
+  # https://seance.randomwalk.design/releases/appcast.xml). Jaspr copies
+  # web/ into the site as-is.
+  FEED: website/web/releases/appcast.xml
+
+jobs:
+  deploy:
+    name: Build and deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history, so the check below can tell whether the feed has
+          # ever existed.
+          fetch-depth: 0
+
+      # Once the feed exists, publishing the site without it would cut every
+      # installed copy of Séance off from updates, so refuse to deploy.
+      - name: Check the update feed is still there
+        run: |
+          if [ ! -f "$FEED" ] && [ -n "$(git log --oneline -1 -- "$FEED")" ]; then
+            echo "::error::$FEED has been deleted. Séance checks it for updates; restore it before deploying."
+            exit 1
+          fi
+
+      # Same versions as local development.
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.13.1
+
+      - name: Install the Jaspr CLI
+        run: dart pub global activate jaspr_cli 0.23.5
+
+      - name: Build the static site
+        working-directory: website
+        run: |
+          dart pub get
+          jaspr build
+          # The build folder also holds development files (package configs,
+          # lint rules) that don't belong on the public site.
+          rm -rf build/jaspr/packages build/jaspr/.dart_tool build/jaspr/.build.manifest
+
+      - name: Check the feed made it into the site
+        run: |
+          if [ -f "$FEED" ] && ! cmp -s "$FEED" website/build/jaspr/releases/appcast.xml; then
+            echo "::error::The update feed is missing from the built site, or differs from $FEED."
+            exit 1
+          fi
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/build/jaspr
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
