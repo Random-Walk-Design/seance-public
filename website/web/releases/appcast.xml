@@ -6,6 +6,15 @@
     <description>Updates for Séance.</description>
     <language>en</language>
     <item>
+      <title>Séance 0.1.0 alpha 3</title>
+      <pubDate>Sun, 18 Oct 2026 20:42:51 GMT</pubDate>
+      <sparkle:version>100003</sparkle:version>
+      <sparkle:shortVersionString>0.1.0 alpha 3</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <sparkle:channel>alpha</sparkle:channel>
+      <enclosure url="https://github.com/Random-Walk-Design/seance-public/releases/download/v0.1.0-alpha.3/Seance-0.1.0-alpha.3.zip" length="3802575" type="application/octet-stream" sparkle:edSignature="INNdKsivIC2Fqq5if14CxeiQIhEhbmcYebPH2j2HPoZQPpBEevPnuSOnywc9QfeKL6zgwBaE0opVyxMGhGEUAg==" />
+    </item>
+    <item>
       <title>Séance 0.1.0 alpha 2</title>
       <pubDate>Sun, 18 Oct 2026 18:32:15 GMT</pubDate>
       <sparkle:version>100002</sparkle:version>
