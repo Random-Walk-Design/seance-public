@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+  <channel>
+    <title>Séance</title>
+    <link>https://seance.randomwalk.design</link>
+    <description>Updates for Séance.</description>
+    <language>en</language>
+    <item>
+      <title>Séance 0.1.0 alpha 1</title>
+      <pubDate>Sun, 18 Oct 2026 17:30:14 GMT</pubDate>
+      <sparkle:version>100001</sparkle:version>
+      <sparkle:shortVersionString>0.1.0 alpha 1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <sparkle:channel>alpha</sparkle:channel>
+      <enclosure url="https://github.com/Random-Walk-Design/seance-public/releases/download/v0.1.0-alpha.1/Seance-0.1.0-alpha.1.zip" length="1816528" type="application/octet-stream" sparkle:edSignature="v/9sYhoLE6CCSvoSG/jHTy3XklCe4d6ZxkPhpaGsLZRa86fVLtiV6hzk0wg7Juj/ibpa7wWDD3lGBlpvxSJdBQ==" />
+    </item>
+  </channel>
+</rss>
