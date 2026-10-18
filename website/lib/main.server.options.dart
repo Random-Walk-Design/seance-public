@@ -23,5 +23,6 @@ import 'package:website/pages/home.dart' as _home;
 ///   runApp(...);
 /// }
 /// ```
-ServerOptions get defaultServerOptions =>
-    ServerOptions(styles: () => [..._home.Home.styles]);
+ServerOptions get defaultServerOptions => ServerOptions(
+  styles: () => [..._home.Downloads.styles, ..._home.Home.styles],
+);

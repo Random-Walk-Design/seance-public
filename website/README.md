@@ -23,6 +23,7 @@ The output is in `build/jaspr`.
 ## Layout
 
 - `lib/pages/` — one component per page; add routes in `lib/app.dart`.
+- `lib/releases.dart` — reads the update feed when the site is built. The home page's downloads come from it, so each release (which updates the feed and redeploys the site) appears on its own, with nothing to edit here.
 - `lib/constants/theme.dart` — colors (light and dark) and global styles.
 - `web/` — copied into the site as-is (favicon, images).
 - `web/releases/appcast.xml` — **Séance's update feed. Never move, rename, or delete it**; installed copies of Séance read it at `/releases/appcast.xml`. It's written by Séance's release workflow, not by hand.
