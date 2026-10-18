@@ -1,6 +1,7 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
+import '../mark.dart';
 import '../releases.dart';
 
 /// The home page: what Séance is, and its downloads, read from the update
@@ -13,7 +14,7 @@ class Home extends StatelessComponent {
     final releases = loadReleases();
     return main_(classes: 'home', [
       header(classes: 'hero', [
-        div(classes: 'mark', attributes: {'aria-hidden': 'true'}, [.text('✦')]),
+        div(classes: 'mark', [RawText(markSvg(size: 72))]),
         h1([.text('Séance')]),
         p(classes: 'tagline', [
           .text('Save a Mac Space and close it. Summon it back later, every window where you left it.'),
@@ -34,10 +35,9 @@ class Home extends StatelessComponent {
     ),
     css('.hero').styles(raw: {'text-align': 'center', 'margin-bottom': '40px'}),
     css('.mark').styles(raw: {
-      'font-size': '56px',
-      'line-height': '1',
+      'line-height': '0',
       'color': 'var(--accent)',
-      'text-shadow': '0 0 28px var(--glow)',
+      'filter': 'drop-shadow(0 0 18px var(--glow))',
     }),
     css('h1').styles(raw: {
       'margin': '20px 0 8px',
