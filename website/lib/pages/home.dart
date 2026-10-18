@@ -106,8 +106,9 @@ class Downloads extends StatelessComponent {
       div(classes: 'install', [
         h2([.text('Installing')]),
         ol([
-          li([.text('Open the downloaded Seance.dmg.')]),
-          li([.text('Drag Séance into your Applications folder, then open it from there.')]),
+          li([.text('Double-click the downloaded Seance.dmg. A window opens with Séance and your Applications folder.')]),
+          li([.text('Drag Séance onto the Applications folder.')]),
+          li([.text('Open Séance from your Applications folder. (You can then eject the Séance disk in Finder’s sidebar.)')]),
           li([.text('Séance asks for Accessibility access, which it needs to see and move windows.')]),
         ]),
         p([
