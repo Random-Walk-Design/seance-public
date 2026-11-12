@@ -61,6 +61,9 @@ class Release {
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
 
+  /// "October 18, 2026 · macOS 15 or later".
+  String get summary => [?formattedDate, requirement].join(' · ');
+
   /// "macOS 15 or later" (dropping a trailing ".0").
   String get requirement => 'macOS ${minimumMacOS.replaceFirst(RegExp(r'\.0$'), '')} or later';
 }
@@ -100,6 +103,12 @@ List<Release> loadReleases() {
   releases.sort((a, b) => b.build.compareTo(a.build));
   return releases;
 }
+
+/// The release most people should download: the newest stable one or, until
+/// there is one, the newest pre-release. Null if nothing's released yet.
+/// [releases] is newest first.
+Release? recommendedRelease(List<Release> releases) =>
+    releases.where((release) => release.channel == Channel.stable).firstOrNull ?? releases.firstOrNull;
 
 DateTime? _parseDate(String? text) {
   if (text == null) return null;

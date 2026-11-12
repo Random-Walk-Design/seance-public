@@ -1,66 +1,36 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
-import '../mark.dart';
+import '../components/app_strip.dart';
+import '../components/hero.dart';
 import '../releases.dart';
 
-/// The home page: what Séance is, and its downloads, read from the update
-/// feed when the site is built.
+/// The home page: the hero (what Séance is, and its latest download), the
+/// apps it works with, then every download, read from the update feed when the site is built.
 class Home extends StatelessComponent {
   const Home({super.key});
 
   @override
   Component build(BuildContext context) {
     final releases = loadReleases();
-    return main_(classes: 'home', [
-      header(classes: 'hero', [
-        div(classes: 'mark', [RawText(markSvg(size: 72))]),
-        h1([.text('Séance')]),
-        p(classes: 'tagline', [
-          .text('Save your Spaces. Summon them back.'),
-        ]),
-      ]),
-      if (releases.isEmpty) p(classes: 'status', [.text('Coming soon for macOS')]) else Downloads(releases: releases),
+    return .fragment([
+      Hero(release: recommendedRelease(releases)),
+      const AppStrip(),
+      if (releases.isNotEmpty) main_(classes: 'home', [Downloads(releases: releases)]),
     ]);
   }
 
   @css
   static List<StyleRule> get styles => [
     css('.home').styles(
-      padding: .symmetric(vertical: 72.px, horizontal: 16.px),
+      padding: .symmetric(vertical: 56.px, horizontal: 16.px),
       raw: {'max-width': '40rem', 'margin': '0 auto'},
-    ),
-    css('.hero').styles(raw: {'text-align': 'center', 'margin-bottom': '40px'}),
-    css('.mark').styles(
-      raw: {
-        'line-height': '0',
-        'color': 'var(--accent)',
-        'filter': 'drop-shadow(0 0 18px var(--glow))',
-      },
-    ),
-    css('h1').styles(
-      raw: {
-        'margin': '20px 0 8px',
-        'font': '700 clamp(2.4rem, 7vw, 3.4rem)/1.1 -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-        'letter-spacing': '-0.02em',
-      },
-    ),
-    css('.tagline').styles(raw: {'margin': '0', 'font-size': '1.2rem', 'color': 'var(--muted)'}),
-    css('.status').styles(
-      raw: {
-        'display': 'table',
-        'margin': '0 auto',
-        'padding': '6px 14px',
-        'border': '1px solid var(--accent)',
-        'border-radius': '999px',
-        'color': 'var(--accent)',
-        'font-size': '0.9rem',
-      },
     ),
   ];
 }
 
-/// The recommended download, newer pre-releases to try, and every release.
+/// The recommended download's notes (its button is in the hero), newer
+/// pre-releases to try, and every release.
 class Downloads extends StatelessComponent {
   const Downloads({required this.releases, super.key});
 
@@ -69,9 +39,8 @@ class Downloads extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
-    final stable = releases.where((release) => release.channel == Channel.stable).firstOrNull;
-    // Stable when there is one; until then, the newest pre-release.
-    final recommended = stable ?? releases.first;
+    // The hero has this release's download button.
+    final recommended = recommendedRelease(releases)!;
     // Pre-releases newer than the recommended one: the newest beta and alpha.
     final previews = [
       for (final channel in [Channel.beta, Channel.alpha])
@@ -85,17 +54,8 @@ class Downloads extends StatelessComponent {
       classes: 'downloads',
       attributes: {'aria-label': 'Download'},
       [
-        div(classes: 'primary', [
-          a(href: '${recommended.downloadUrl}', classes: 'button', [
-            .text('Download Séance ${recommended.version}'),
-          ]),
-          p(classes: 'meta', [.text(_meta(recommended))]),
-          if (stable == null)
-            p(classes: 'note', [
-              .text('Séance is in early development. Expect rough edges.'),
-            ]),
-          if (recommended.notesHtml case final notes?) div(classes: 'notes', [RawText(notes)]),
-        ]),
+        if (recommended.notesHtml case final notes?)
+          div(classes: 'primary', [div(classes: 'notes', [RawText(notes)])]),
 
         if (previews.isNotEmpty)
           div(classes: 'previews', [
@@ -145,7 +105,7 @@ class Downloads extends StatelessComponent {
   }
 
   /// "October 18, 2026 · macOS 15 or later".
-  static String _meta(Release release) => [?release.formattedDate, release.requirement].join(' · ');
+  static String _meta(Release release) => release.summary;
 
   /// What to expect from a channel's releases (the same as in Séance's
   /// Settings).
@@ -159,39 +119,15 @@ class Downloads extends StatelessComponent {
   static List<StyleRule> get styles => [
     css('.downloads').styles(raw: {'display': 'flex', 'flex-direction': 'column', 'gap': '40px'}),
     css('.primary').styles(raw: {'text-align': 'center'}),
-    css('.button').styles(
-      raw: {
-        'display': 'inline-block',
-        'padding': '14px 28px',
-        'border-radius': '12px',
-        'background': 'var(--accent)',
-        'color': 'var(--on-accent)',
-        'font-weight': '600',
-        'font-size': '1.1rem',
-        'text-decoration': 'none',
-        'box-shadow': '0 6px 24px var(--glow)',
-      },
-    ),
-    css('.button:hover').styles(raw: {'filter': 'brightness(1.08)'}),
-    css('.button:focus-visible, .downloads a:focus-visible').styles(
+    css('.downloads a:focus-visible').styles(
       raw: {
         'outline': '3px solid var(--accent)',
         'outline-offset': '3px',
       },
     ),
     css('.meta').styles(raw: {'margin': '10px 0 0', 'color': 'var(--muted)', 'font-size': '0.9rem'}),
-    css('.note').styles(
-      raw: {
-        'margin': '20px auto 0',
-        'max-width': '30rem',
-        'padding': '12px 16px',
-        'border-radius': '10px',
-        'background': 'var(--surface)',
-        'font-size': '0.95rem',
-      },
-    ),
     css('.notes').styles(raw: {'text-align': 'left', 'font-size': '0.95rem'}),
-    css('.primary .notes').styles(raw: {'max-width': '30rem', 'margin': '16px auto 0'}),
+    css('.primary .notes').styles(raw: {'max-width': '30rem', 'margin': '0 auto'}),
     css('.notes p, .notes ul').styles(raw: {'margin': '8px 0'}),
     css('h2').styles(raw: {'margin': '0 0 12px', 'font-size': '1.15rem'}),
     css('.preview').styles(raw: {'margin': '0 0 12px'}),

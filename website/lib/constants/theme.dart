@@ -11,10 +11,14 @@ const _light = {
   '--on-accent': '#ffffff',
   '--surface': 'rgba(122, 63, 209, 0.08)',
   '--border': 'rgba(29, 26, 36, 0.12)',
+  '--strip': '#efeaf8',
 };
 
-const _dark = {
-  '--background': '#121017',
+/// Also used by the hero, which is dark in both modes.
+const darkColors = {
+  // A little lighter than the hero (#0c0618 in lib/components/hero.dart),
+  // in the same purple.
+  '--background': '#150d27',
   '--text': '#f1edf8',
   '--muted': '#a69fb8',
   '--accent': '#b98cff',
@@ -22,6 +26,7 @@ const _dark = {
   '--on-accent': '#1a1023',
   '--surface': 'rgba(185, 140, 255, 0.1)',
   '--border': 'rgba(241, 237, 248, 0.14)',
+  '--strip': '#100820',
 };
 
 /// Uses macOS's own fonts, matching the app.
@@ -31,7 +36,7 @@ const _systemFont = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetic
 final themeStyles = <StyleRule>[
   css(':root').styles(raw: _light),
   css.media(const MediaQuery.all(prefersColorScheme: ColorScheme.dark), [
-    css(':root').styles(raw: _dark),
+    css(':root').styles(raw: darkColors),
   ]),
   css('*').styles(raw: {'box-sizing': 'border-box'}),
   css('html, body').styles(

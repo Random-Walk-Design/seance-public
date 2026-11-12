@@ -5,6 +5,8 @@
 // Generated with jaspr_builder
 
 import 'package:jaspr/server.dart';
+import 'package:website/components/app_strip.dart' as _app_strip;
+import 'package:website/components/hero.dart' as _hero;
 import 'package:website/pages/home.dart' as _home;
 
 /// Default [ServerOptions] for use with your Jaspr project.
@@ -24,5 +26,10 @@ import 'package:website/pages/home.dart' as _home;
 /// }
 /// ```
 ServerOptions get defaultServerOptions => ServerOptions(
-  styles: () => [..._home.Downloads.styles, ..._home.Home.styles],
+  styles: () => [
+    ..._app_strip.AppStrip.styles,
+    ..._hero.Hero.styles,
+    ..._home.Downloads.styles,
+    ..._home.Home.styles,
+  ],
 );
