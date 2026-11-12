@@ -6,6 +6,16 @@
     <description>Updates for Séance.</description>
     <language>en</language>
     <item>
+      <title>Séance 0.1.0 alpha 5</title>
+      <pubDate>Thu, 12 Nov 2026 03:35:37 GMT</pubDate>
+      <sparkle:version>100005</sparkle:version>
+      <sparkle:shortVersionString>0.1.0 alpha 5</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <sparkle:channel>alpha</sparkle:channel>
+      <description>&lt;ul&gt;&lt;li&gt;Summon ChatGPT, Claude, Antigravity&lt;/li&gt;&lt;li&gt;Summon Discord, Slack&lt;/li&gt;&lt;li&gt;Summon Xcode&lt;/li&gt;&lt;li&gt;Summon Rive&lt;/li&gt;&lt;li&gt;Summon OBS&lt;/li&gt;&lt;li&gt;Sparkles appear where Seance taps your apps&lt;/li&gt;&lt;/ul&gt;</description>
+      <enclosure url="https://github.com/Random-Walk-Design/seance-public/releases/download/v0.1.0-alpha.5/Seance-0.1.0-alpha.5.zip" length="4370928" type="application/octet-stream" sparkle:edSignature="8IKa3R3bIIoL2wm/n/gTY1PDOUPANYEckEI7VoaRNdTUPrnxzGjaLYabkIXSFh0ZcWZrs/VL3zM/1wEp6A+SBQ==" />
+    </item>
+    <item>
       <title>Séance 0.1.0 alpha 4</title>
       <pubDate>Mon, 19 Oct 2026 00:45:24 GMT</pubDate>
       <sparkle:version>100004</sparkle:version>
