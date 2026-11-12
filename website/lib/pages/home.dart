@@ -29,8 +29,8 @@ class Home extends StatelessComponent {
   ];
 }
 
-/// The recommended download's notes (its button is in the hero), newer
-/// pre-releases to try, and every release.
+/// Below the hero (which has the recommended download): newer pre-releases
+/// to try, how to install, and every release.
 class Downloads extends StatelessComponent {
   const Downloads({required this.releases, super.key});
 
@@ -54,9 +54,6 @@ class Downloads extends StatelessComponent {
       classes: 'downloads',
       attributes: {'aria-label': 'Download'},
       [
-        if (recommended.notesHtml case final notes?)
-          div(classes: 'primary', [div(classes: 'notes', [RawText(notes)])]),
-
         if (previews.isNotEmpty)
           div(classes: 'previews', [
             h2([.text('Try what’s next')]),
@@ -96,7 +93,6 @@ class Downloads extends StatelessComponent {
                     span(classes: 'badge ${release.channel.name}', [.text(release.channel.title)]),
                 ]),
                 p(classes: 'meta', [.text(_meta(release))]),
-                if (release.notesHtml case final notes?) div(classes: 'notes', [RawText(notes)]),
               ]),
           ]),
         ]),
@@ -118,7 +114,6 @@ class Downloads extends StatelessComponent {
   @css
   static List<StyleRule> get styles => [
     css('.downloads').styles(raw: {'display': 'flex', 'flex-direction': 'column', 'gap': '40px'}),
-    css('.primary').styles(raw: {'text-align': 'center'}),
     css('.downloads a:focus-visible').styles(
       raw: {
         'outline': '3px solid var(--accent)',
@@ -126,9 +121,6 @@ class Downloads extends StatelessComponent {
       },
     ),
     css('.meta').styles(raw: {'margin': '10px 0 0', 'color': 'var(--muted)', 'font-size': '0.9rem'}),
-    css('.notes').styles(raw: {'text-align': 'left', 'font-size': '0.95rem'}),
-    css('.primary .notes').styles(raw: {'max-width': '30rem', 'margin': '0 auto'}),
-    css('.notes p, .notes ul').styles(raw: {'margin': '8px 0'}),
     css('h2').styles(raw: {'margin': '0 0 12px', 'font-size': '1.15rem'}),
     css('.preview').styles(raw: {'margin': '0 0 12px'}),
     css('.preview p').styles(raw: {'margin': '2px 0 0', 'color': 'var(--muted)', 'font-size': '0.9rem'}),

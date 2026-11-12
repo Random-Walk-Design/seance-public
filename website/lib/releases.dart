@@ -27,7 +27,6 @@ class Release {
     required this.date,
     required this.minimumMacOS,
     required this.downloadUrl,
-    required this.notesHtml,
   });
 
   /// As people see it, e.g. "0.2.0 beta 1".
@@ -45,10 +44,6 @@ class Release {
   /// The disk image people install from (the feed itself lists the update
   /// zip, which sits next to it in the same GitHub Release).
   final Uri downloadUrl;
-
-  /// Written by the release script from plain-text notes, with everything
-  /// escaped, so it's safe to show as HTML. Null when there are none.
-  final String? notesHtml;
 
   /// "October 18, 2026".
   String? get formattedDate {
@@ -83,7 +78,6 @@ List<Release> loadReleases() {
     if (enclosure == null || version == null || build == null) continue;
 
     final updateUrl = Uri.parse(enclosure);
-    final notes = item.getElement('description')?.innerText.trim();
     releases.add(Release(
       version: version,
       build: build,
@@ -96,7 +90,6 @@ List<Release> loadReleases() {
       downloadUrl: updateUrl.replace(
         pathSegments: [...updateUrl.pathSegments.take(updateUrl.pathSegments.length - 1), 'Seance.dmg'],
       ),
-      notesHtml: notes == null || notes.isEmpty ? null : notes,
     ));
   }
 
