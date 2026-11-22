@@ -6,6 +6,17 @@
     <description>Updates for Séance.</description>
     <language>en</language>
     <item>
+      <title>Séance 0.1.0 alpha 6</title>
+      <pubDate>Sun, 22 Nov 2026 19:35:51 GMT</pubDate>
+      <sparkle:version>100006</sparkle:version>
+      <sparkle:shortVersionString>0.1.0 alpha 6</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <sparkle:channel>alpha</sparkle:channel>
+      <description>&lt;p&gt;Summoning a Space is calmer and quicker: windows come back one at a time, quickest first, and you can see and control how long Séance waits for each one.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Windows come back in a smarter order. Quick ones like Finder and documents come first, and heavy apps like IDEs come last. Séance learns from past summons how long each app takes. Where saved windows overlap, the one that was in front still ends up in front.&lt;/li&gt;&lt;li&gt;A slow app no longer holds everything up. If a window isn&amp;#x27;t back within about 5 seconds, the next one starts anyway.&lt;/li&gt;&lt;li&gt;Windows land where they belong. A window opens at its saved position when it can. Otherwise it glides into place like it&amp;#x27;s being dragged by hand. With Reduce Motion on, it moves at once.&lt;/li&gt;&lt;li&gt;New per-window countdown. If a window takes more than about 3 seconds, a countdown fades in over it, with a +10 seconds button for more time. It fades out as soon as the window appears. Windows that come back quickly never show one.&lt;/li&gt;&lt;li&gt;New Cancel Summon button. While a summon is running, a small dock at the top of the screen lets you cancel. Windows and apps that summon opened are closed, and windows you already had open are left alone.&lt;/li&gt;&lt;li&gt;A window that can&amp;#x27;t come back gives up after a few seconds, instead of waiting out its whole countdown.&lt;/li&gt;&lt;li&gt;Smoother sparkles and countdowns. They no longer stutter or freeze while apps like Safari start up or while Save &amp;amp; Close reads your windows.&lt;/li&gt;&lt;li&gt;More reliable with busy apps. An app that&amp;#x27;s slow to answer no longer loses its window titles and documents when you save, and a frozen app can&amp;#x27;t stall Séance.&lt;/li&gt;&lt;/ul&gt;</description>
+      <enclosure url="https://github.com/Random-Walk-Design/seance-public/releases/download/v0.1.0-alpha.6/Seance-0.1.0-alpha.6.zip" length="4533108" type="application/octet-stream" sparkle:edSignature="gzoWu0si6Pk1OWQr3PoAANRNniPTfjCNdYnDYrfCntlsOYfEEvRJraL0v3DJSktt1T1OYZhu/ANCA+0GmwJ7BQ==" />
+    </item>
+    <item>
       <title>Séance 0.1.0 alpha 5</title>
       <pubDate>Thu, 12 Nov 2026 03:35:37 GMT</pubDate>
       <sparkle:version>100005</sparkle:version>
