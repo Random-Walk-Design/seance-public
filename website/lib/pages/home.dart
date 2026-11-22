@@ -2,11 +2,16 @@ import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
 import '../components/app_strip.dart';
+import '../components/demo_monitor.dart';
+import '../components/features.dart';
 import '../components/hero.dart';
+import '../components/site_footer.dart';
 import '../releases.dart';
 
 /// The home page: the hero (what Séance is, and its latest download), the
-/// apps it works with, then every download, read from the update feed when the site is built.
+/// apps it works with, the feature sections, the ultrawide monitor demo, then
+/// every download, read from the update feed when the site is built, and the
+/// footer.
 class Home extends StatelessComponent {
   const Home({super.key});
 
@@ -16,7 +21,10 @@ class Home extends StatelessComponent {
     return .fragment([
       Hero(release: recommendedRelease(releases)),
       const AppStrip(),
+      const Features(),
+      const DemoMonitor(),
       if (releases.isNotEmpty) main_(classes: 'home', [Downloads(releases: releases)]),
+      const SiteFooter(),
     ]);
   }
 
@@ -141,6 +149,6 @@ class Downloads extends StatelessComponent {
     css('.all summary').styles(raw: {'cursor': 'pointer', 'font-weight': '600'}),
     css('.all > ul').styles(raw: {'list-style': 'none', 'margin': '12px 0 0', 'padding': '0'}),
     css('.all > ul > li').styles(raw: {'padding': '14px 0', 'border-top': '1px solid var(--border)'}),
-    css('.all .meta').styles(raw: {'margin-top': '2px'}),
+    css('.all .meta').styles(raw: {'margin': '2px 0 0'}),
   ];
 }

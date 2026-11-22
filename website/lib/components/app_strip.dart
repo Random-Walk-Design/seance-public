@@ -16,8 +16,9 @@ import 'package:jaspr/jaspr.dart';
 class AppStrip extends StatelessComponent {
   const AppStrip({super.key});
 
-  /// Each app's name and its file in `web/logos/`.
-  static const _apps = [
+  /// Each app's name and its file in `web/logos/`. The "Trained on Real
+  /// Apps" picture (`app_summons.dart`) summons them too.
+  static const apps = [
     ('ChatGPT', 'chatgpt'),
     ('Claude', 'claude'),
     ('Antigravity', 'antigravity'),
@@ -46,7 +47,7 @@ class AppStrip extends StatelessComponent {
       classes: copy ? 'copy' : null,
       attributes: {if (copy) 'aria-hidden': 'true'},
       [
-        for (final (name, file) in _apps)
+        for (final (name, file) in apps)
           li(
             attributes: {
               'style': '--logo: url(/logos/$file.svg)',

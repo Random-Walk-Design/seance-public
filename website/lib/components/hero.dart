@@ -88,16 +88,16 @@ class Hero extends StatelessComponent {
   static const _tallestRise = 1.25;
 
   /// The app gives a sparkle a new random place each time it reappears. CSS
-  /// can't, so each sparkle is this many elements that take turns, each
-  /// with its own place: the pattern only repeats after this many lives.
-  static const _lives = 3;
+  /// can't, so each sparkle element moves through this many places in
+  /// turn, one per life, jumping to the next while it's invisible between
+  /// lives: the pattern only repeats after this many lives.
+  static const _lives = sparkleLives;
 
   /// Seconds for one twinkle (the app's `sin(elapsed * 14)`).
   static const _twinkle = 2 * pi / 14;
 
-  /// The sparkles' elements. Each is placed on the window's top or side
-  /// edges (the bottom edge is out of sight) and animated by the
-  /// `sparkle-life` and `sparkle-twinkle` keyframes.
+  /// The sparkles' elements. Each life is placed on the window's top or
+  /// side edges (the bottom edge is out of sight); see [sparkleElement].
   static String _sparkles() {
     // The same sparkles on every build.
     final random = Random(1848);
@@ -109,57 +109,59 @@ class Hero extends StatelessComponent {
 
     final html = StringBuffer();
     for (var index = 0; index < count; index++) {
-      for (var life = 0; life < _lives; life++) {
-        final distance = random.nextDouble() * perimeter;
-        final String left, top;
-        if (distance < _windowWidth) {
-          left = '${_number(distance / _windowWidth * 100)}%';
-          top = '0';
-        } else if (distance < _windowWidth + sideHeight) {
-          left = '100%';
-          top = '${_number(distance - _windowWidth)}px';
-        } else {
-          left = '0';
-          top = '${_number(distance - _windowWidth - sideHeight)}px';
-        }
-        final radius = (2.5 + random.nextDouble() * 3) * _scale;
-        final sway = (random.nextDouble() - 0.5) * 12 * _scale;
-        final rise = _rise * (_shortestRise + random.nextDouble() * (_tallestRise - _shortestRise));
-        final white = random.nextDouble() < 0.5;
-        // Negative delays, so the page loads with sparkles already rising.
-        final start = -(index / count + life) * _lifetime;
-        final twinkleStart = -random.nextDouble() * _twinkle;
-        html.write(
-          '<span class="sparkle${white ? ' white' : ''}" style="left:$left;top:$top;'
-          '--r:${_number(radius)}px;--sway:${_number(sway)}px;--rise:${_number(rise)}px;'
-          '--start:${_number(start)}s;--twinkle:${_number(twinkleStart)}s"><i></i></span>',
-        );
-      }
+      final lives = [
+        for (var life = 0; life < _lives; life++)
+          () {
+            // Across the window's width in `cqw` (the aura is a size
+            // container), down its sides in pixels.
+            final distance = random.nextDouble() * perimeter;
+            final (x, y) = distance < _windowWidth
+                ? ('${_number(distance / _windowWidth * 100)}cqw', '0px')
+                : distance < _windowWidth + sideHeight
+                ? ('100cqw', '${_number(distance - _windowWidth)}px')
+                : ('0cqw', '${_number(distance - _windowWidth - sideHeight)}px');
+            return (
+              x: x,
+              y: y,
+              radius: (2.5 + random.nextDouble() * 3) * _scale,
+              sway: (random.nextDouble() - 0.5) * 12 * _scale,
+              rise: _rise * (_shortestRise + random.nextDouble() * (_tallestRise - _shortestRise)),
+              white: random.nextDouble() < 0.5,
+              twinkleStart: -random.nextDouble() * _twinkle,
+            );
+          }(),
+      ];
+      html.write(sparkleElement(lives, index: index, count: count, largestRadius: 5.5 * _scale));
     }
     return html.toString();
   }
 
-  /// One sparkle's life as keyframes: the app's formulas, sampled. The life
-  /// takes the first 1/[_lives] of the animation; the sparkle is invisible
-  /// for the rest, while the others that share its turn have theirs.
+  /// A sparkle element's lives as keyframes: the app's formulas, sampled,
+  /// for each life in turn. Between lives, while it's invisible, it jumps
+  /// to the next life's place.
   static Map<String, Styles> get _lifeKeyframes {
     const samples = 10;
     return {
-      for (var sample = 0; sample <= samples; sample++)
-        '${_number(sample / samples * 100 / _lives)}%': () {
-          final progress = sample / samples;
-          // Ease out: quick lift-off, then drifting.
-          final lift = 1 - pow(1 - progress, 2);
-          final arc = sin(progress * pi);
-          return Styles(
-            raw: {
-              'translate': 'calc(var(--sway) * ${_number(arc)}) calc(var(--rise) * ${_number(-lift)})',
-              'scale': _number(1 - progress * 0.4),
-              'opacity': _number(arc),
-            },
-          );
-        }(),
-      '100%': Styles(raw: {'translate': '0 calc(var(--rise) * -1)', 'scale': '0.6', 'opacity': '0'}),
+      for (var turn = 0; turn < _lives; turn++)
+        for (var sample = 0; sample <= samples; sample++)
+          // A life ends just before the next begins, so the jump between
+          // them is instant.
+          '${_number((turn + sample / samples) / _lives * 100 - (sample == samples && turn < _lives - 1 ? 0.01 : 0))}%':
+              () {
+                final progress = sample / samples;
+                // Ease out: quick lift-off, then drifting.
+                final lift = 1 - pow(1 - progress, 2);
+                final arc = sin(progress * pi);
+                return Styles(
+                  raw: {
+                    'translate':
+                        'calc(var(--x$turn) + var(--sway$turn) * ${_number(arc)}) '
+                        'calc(var(--y$turn) + var(--rise$turn) * ${_number(-lift)})',
+                    'scale': 'calc(var(--k$turn) * ${_number(1 - progress * 0.4)})',
+                    'opacity': _number(arc),
+                  },
+                );
+              }(),
     };
   }
 
@@ -358,7 +360,10 @@ class Hero extends StatelessComponent {
 
     // Séance's border, over the window: a wide, soft glow, then a crisp
     // line on top, both centered on the window's edge.
-    css('.aura').styles(raw: {'position': 'absolute', 'inset': '0', 'pointer-events': 'none'}),
+    // A size container, so sparkles can be placed across it in `cqw`.
+    css('.aura').styles(
+      raw: {'position': 'absolute', 'inset': '0', 'pointer-events': 'none', 'container-type': 'size'},
+    ),
     css('.aura-glow, .aura-line').styles(
       raw: {
         'position': 'absolute',
@@ -390,7 +395,10 @@ class Hero extends StatelessComponent {
     // star and its halo are drawn around it by the <i>, which twinkles.
     css('.sparkle').styles(
       raw: {
+        // Moved to each life's place by `sparkle-life`.
         'position': 'absolute',
+        'left': '0',
+        'top': '0',
         'color': _highlight,
         'opacity': '0',
         'animation': 'sparkle-life ${_number(_lifetime * _lives)}s linear var(--start) infinite',
@@ -432,4 +440,50 @@ class Hero extends StatelessComponent {
       css('.blob, .aura-glow, .aura-line').styles(raw: {'animation': 'none'}),
     ]),
   ];
+}
+
+/// How many places each sparkle element moves through, one per life.
+const sparkleLives = 3;
+
+/// One life of a sparkle: where it appears ([x] and [y], from the top left
+/// of its size container), and how it looks and moves.
+typedef SparkleLife = ({
+  String x,
+  String y,
+  double radius,
+  double sway,
+  double rise,
+  bool white,
+  double twinkleStart,
+});
+
+/// One sparkle element, the [index]th of [count], that lives [lives] in turn
+/// (animated by the hero's `sparkle-life` and `sparkle-twinkle` keyframes).
+///
+/// It replaces one element per life taking turns, which drew the same but
+/// had three times the animations: enough to make scrolling stutter. It's
+/// drawn at [largestRadius] and scaled down to each life's radius. It keeps
+/// its first life's color and twinkle.
+String sparkleElement(
+  List<SparkleLife> lives, {
+  required int index,
+  required int count,
+  required double largestRadius,
+}) {
+  String number(num value) => value.toStringAsFixed(2).replaceFirst(RegExp(r'\.?0+$'), '');
+  final style = StringBuffer(
+    '--r:${number(largestRadius)}px;'
+    // Negative delays, so the page loads with sparkles already rising.
+    '--start:${number(-(index / count) * 1.4)}s;'
+    '--twinkle:${number(lives.first.twinkleStart)}s',
+  );
+  for (var turn = 0; turn < lives.length; turn++) {
+    // The order the lives used to take turns in, one element each.
+    final life = lives[(lives.length - turn) % lives.length];
+    style.write(
+      ';--x$turn:${life.x};--y$turn:${life.y};--k$turn:${number(life.radius / largestRadius)};'
+      '--sway$turn:${number(life.sway)}px;--rise$turn:${number(life.rise)}px',
+    );
+  }
+  return '<span class="sparkle${lives.first.white ? ' white' : ''}" style="$style"><i></i></span>';
 }
